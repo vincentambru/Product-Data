@@ -1,25 +1,40 @@
-import logo from './logo.svg';
+import React, { Component, useState,useEffect } from 'react';
+import { BrowserRouter as Router,Routes, Route, Link } from 'react-router-dom';
+import CardProduct from './Components/cardProduct';
+import ProductDetail from './Components/productDetail';
+import CartProduct from './Components/cartProduct'
+import HandleContext from './Context'
+import axios from 'axios';
+
 import './App.css';
 
-function App() {
+export default function App() {
+
+  const [cartData, setCartData] = useState([]);
+  const [value, setValue] = useState([]);
+
+  useEffect(() =>{
+    axios.get("https://fakestoreapi.com/products").then((d) =>(
+        setValue(d.data)
+    ))
+
+},[])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <HandleContext.Provider value={{
+      cartData, setCartData, value, setValue
+    }}>
+    <Router>
+      <Routes>
+        {/* <Route path="/" element={<Layout />}> */}
+          <Route path="/" element={<CardProduct />} />
+          <Route path="productDetail/:id" element={<ProductDetail />} />
+          <Route path="/cartProduct" element={<CartProduct />} />
+          {/* <Route path="*" element={<NoPage />} /> */}
+        {/* </Route> */}
+      </Routes>
+    </Router>
+    </HandleContext.Provider>
   );
 }
 
-export default App;
